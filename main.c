@@ -3,22 +3,31 @@
 #include <string.h>
 #include "fomalib.h"
 
-struct fsm *convert_to_categories() {
+char* voiceless_consonants = "[k|s|t|ts|ch|h|f|p]";
+char* voiceless_consonants_and_EOW = "[k|s|t|ts|ch|h|f|p|.#.]";
+char* voiced_consonants = "[g|z|d|j|dz|n|b|m|y|r|w]";
+char* high_vowels = "[i|u]";
+char* low_vowels = "[a|e|o]";
+
+struct fsm *Lexcion() {
     struct fsm *net;
-    net = fsm_parse_regex("[a:l|i:h|u:h|e:l|o:l|k:t|g:d|s:t|z:d|t:t|d:d|ts:t|ch:t|j:d|dz:d|n:d|h:t|f:t|b:d|p:t|m:d|y:d|r:d|w:d]*", NULL, NULL);
+    net = fsm_parse_regex("[a|i|u|e|o|k|g|s|z|t|d|ts|ch|j|dz|n|h|f|b|p|m|y|r|w]*", NULL, NULL);
     return net;
 }
 
 struct fsm *HVD() {
     struct fsm *net;
-    net = fsm_parse_regex("h -> o || t _ t .o. h -> o || t _ .#.", NULL, NULL); 
+    char regex_string[100];
+    snprintf(regex_string, sizeof(regex_string), "%s%s%s%s%s", high_vowels, " -> o || ", voiceless_consonants, " _ ", voiceless_consonants_and_EOW);
+    net = fsm_parse_regex(regex_string, NULL, NULL); 
     return net;
 }
 
 int main() {
-    struct fsm *feature_abstraction = convert_to_categories();
-    struct fsm *HVD_fst = HVD();
-    struct fsm *combined = fsm_compose(feature_abstraction, HVD_fst);
+    // Construct the lexicon with phonological rules applied
+    struct fsm *lexicon = Lexcion();
+    struct fsm *hvd = HVD();
+    struct fsm *combined = fsm_compose(lexicon, hvd);
 
     struct apply_handle *ah = apply_init(combined);
     ah = apply_init(combined);
@@ -45,7 +54,7 @@ int main() {
         free(result);
     }    
 
-    apply_clear(ah); 
+    apply_clear(ah);
     fsm_destroy(combined);
     return 0;
 }

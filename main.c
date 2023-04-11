@@ -1,17 +1,52 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "fomalib.h"
 
+char* all_phonemes = "[a|i|u|e|o|k|g|s|z|t|d|ts|ch|j|dz|n|h|f|b|p|m|y|r|w]*";
+
+char* voiceless_consonants = "[k|s|t|ts|ch|h|f|p]";
+char* voiceless_consonants_and_EOW = "[k|s|t|ts|ch|h|f|p|.#.]";
+
+char* voiced_consonants = "[g|z|d|j|dz|n|b|m|y|r|w]";
+
+char* high_vowels = "[i|u]";
+char* high_vowel_i = "i";
+char* high_vowel_u = "u";
+char* devoiced_high_vowel_i = "i̥";
+char* devoiced_high_vowel_u = "u̥";
+
+char* low_vowels = "[a|e|o]";
+
+struct fsm *Lexcion() {
+    struct fsm *net;
+    net = fsm_parse_regex(all_phonemes, NULL, NULL);
+    return net;
+}
+
 struct fsm *HVD() {
     struct fsm *net;
-    net = fsm_parse_regex("[t:t|d:d|l:l|h:h]* .o. h -> o || t _ t .o. h -> o || t _ .#.", NULL, NULL); 
+    char high_vowel_i_devoicing_regex[80];
+    snprintf(high_vowel_i_devoicing_regex, sizeof(high_vowel_i_devoicing_regex), "%s%s%s%s%s%s%s", high_vowel_i, " -> ", devoiced_high_vowel_i, " || ", voiceless_consonants, " _ ", voiceless_consonants_and_EOW);
+    
+    char high_vowel_u_devoicing_regex[80];
+    snprintf(high_vowel_u_devoicing_regex, sizeof(high_vowel_u_devoicing_regex), "%s%s%s%s%s%s%s", high_vowel_u, " -> ", devoiced_high_vowel_u, " || ", voiceless_consonants, " _ ", voiceless_consonants_and_EOW);
+
+    char high_vowel_devoicing_regex[170];
+    snprintf(high_vowel_devoicing_regex, sizeof(high_vowel_devoicing_regex), "%s%s%s", high_vowel_i_devoicing_regex, " .o. ", high_vowel_u_devoicing_regex);
+    
+    net = fsm_parse_regex(high_vowel_devoicing_regex, NULL, NULL); 
     return net;
 }
 
 int main() {
-    struct fsm *HVD_fst = HVD();
-    struct apply_handle *ah = apply_init(HVD_fst);
-    ah = apply_init(HVD_fst);
+    // Construct the lexicon with phonological rules applied
+    struct fsm *lexicon = Lexcion();
+    struct fsm *hvd = HVD();
+    struct fsm *combined = fsm_compose(lexicon, hvd);
+
+    struct apply_handle *ah = apply_init(combined);
+    ah = apply_init(combined);
     
     printf("\nWelcome! Enter your word after the prompt \"Please enter your word\". When you want to stop the program, type EXIT after this prompt.\n\n");
     
@@ -32,9 +67,10 @@ int main() {
             printf("Resulting word is: \n%s \n\n", result);
             result = apply_down(ah, NULL);
         }
+        free(result);
     }    
 
-    apply_clear(ah); 
-    fsm_destroy(HVD_fst);
+    apply_clear(ah);
+    fsm_destroy(combined);
     return 0;
 }

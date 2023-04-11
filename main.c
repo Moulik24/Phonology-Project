@@ -3,23 +3,39 @@
 #include <string.h>
 #include "fomalib.h"
 
+char* all_phonemes = "[a|i|u|e|o|k|g|s|z|t|d|ts|ch|j|dz|n|h|f|b|p|m|y|r|w]*";
+
 char* voiceless_consonants = "[k|s|t|ts|ch|h|f|p]";
 char* voiceless_consonants_and_EOW = "[k|s|t|ts|ch|h|f|p|.#.]";
+
 char* voiced_consonants = "[g|z|d|j|dz|n|b|m|y|r|w]";
+
 char* high_vowels = "[i|u]";
+char* high_vowel_i = "i";
+char* high_vowel_u = "u";
+char* devoiced_high_vowel_i = "i̥";
+char* devoiced_high_vowel_u = "u̥";
+
 char* low_vowels = "[a|e|o]";
 
 struct fsm *Lexcion() {
     struct fsm *net;
-    net = fsm_parse_regex("[a|i|u|e|o|k|g|s|z|t|d|ts|ch|j|dz|n|h|f|b|p|m|y|r|w]*", NULL, NULL);
+    net = fsm_parse_regex(all_phonemes, NULL, NULL);
     return net;
 }
 
 struct fsm *HVD() {
     struct fsm *net;
-    char regex_string[100];
-    snprintf(regex_string, sizeof(regex_string), "%s%s%s%s%s", high_vowels, " -> o || ", voiceless_consonants, " _ ", voiceless_consonants_and_EOW);
-    net = fsm_parse_regex(regex_string, NULL, NULL); 
+    char high_vowel_i_devoicing_regex[80];
+    snprintf(high_vowel_i_devoicing_regex, sizeof(high_vowel_i_devoicing_regex), "%s%s%s%s%s%s%s", high_vowel_i, " -> ", devoiced_high_vowel_i, " || ", voiceless_consonants, " _ ", voiceless_consonants_and_EOW);
+    
+    char high_vowel_u_devoicing_regex[80];
+    snprintf(high_vowel_u_devoicing_regex, sizeof(high_vowel_u_devoicing_regex), "%s%s%s%s%s%s%s", high_vowel_u, " -> ", devoiced_high_vowel_u, " || ", voiceless_consonants, " _ ", voiceless_consonants_and_EOW);
+
+    char high_vowel_devoicing_regex[170];
+    snprintf(high_vowel_devoicing_regex, sizeof(high_vowel_devoicing_regex), "%s%s%s", high_vowel_i_devoicing_regex, " .o. ", high_vowel_u_devoicing_regex);
+    
+    net = fsm_parse_regex(high_vowel_devoicing_regex, NULL, NULL); 
     return net;
 }
 

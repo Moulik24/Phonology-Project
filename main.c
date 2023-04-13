@@ -41,12 +41,25 @@ struct fsm *HVD() {
 
 int main() {
     // Construct the lexicon with phonological rules applied
-    struct fsm *lexicon = Lexcion();
-    struct fsm *hvd = HVD();
-    struct fsm *combined = fsm_compose(lexicon, hvd);
-
-    struct apply_handle *ah = apply_init(combined);
-    ah = apply_init(combined);
+    char* binary_file_name = "JapaneseFST.foma";
+    printf("Attempting to read FST from %s...\n", binary_file_name);
+    struct fsm *japanese_fst = fsm_read_binary_file(binary_file_name);
+    if(japanese_fst != NULL) {
+        printf("Successfully read!\n");
+    }
+    if(japanese_fst == NULL) {
+        printf("Creating/overwriting %s...\n", binary_file_name);
+        struct fsm *lexicon = Lexcion();
+        struct fsm *hvd = HVD();
+        japanese_fst = fsm_compose(lexicon, hvd);
+        if((fsm_write_binary_file(japanese_fst, binary_file_name) == 0)) {
+            printf("Done!\n");
+        } else {
+            perror("Error writing fsm to binary file");
+        }
+    }
+    struct apply_handle *ah = apply_init(japanese_fst);
+    ah = apply_init(japanese_fst);
     
     printf("\nWelcome! Enter your word after the prompt \"Please enter your word\". When you want to stop the program, type EXIT after this prompt.\n\n");
     
@@ -55,7 +68,7 @@ int main() {
         printf("Please enter your word: \n");
         scanf("%s", input_word);
         if(strcmp(input_word,"EXIT") == 0) {
-            printf("Thank you!\n");
+            printf("\nThank you!\n");
             break;
         }
 
@@ -71,6 +84,6 @@ int main() {
     }    
 
     apply_clear(ah);
-    fsm_destroy(combined);
+    fsm_destroy(japanese_fst);
     return 0;
 }

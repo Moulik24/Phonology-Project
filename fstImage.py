@@ -101,7 +101,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('FST_path',type=str,default=None,help="The path to the .foma file binary of your Finite State Transducer.")
     parser.add_argument('output_image_directory',type=str,nargs='?',default="FSTImages",
-                        help="The folder you want the png image of the Finite State Transducer to be put into. By default, the folder is called FSTImages, and is created if it doesn't exist.")
+                        help="The folder you want the png image of the Finite State Transducer to be put into. By default, the folder is called FSTImages. In either case, the folder is created if it doesn't exist.")
     args = parser.parse_args()
 
     try: 

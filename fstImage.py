@@ -4,20 +4,33 @@ import argparse
 from pathlib import Path
 
 class FST_Image:
-    def __init__(self, FST_path, output_image_directory):
+    def __init__(self, FST_path, output_image_directory="FSTImages"):
+        self.__check_FST_file_exists(FST_path)
+        self.__check_FST_file_valid(FST_path)
+
         self.FST_path = FST_path
         self.FST_name = self.__get_fst_name()
         self.output_image_directory = output_image_directory
         self.png_path = ""
 
-    def __FST_file_exists(self):
+    def __check_FST_file_exists(self, FST_path):
         """
-        Check if the FST file given exists or not.
+        :param FST_path: Path to the FST which may not be valid.
+
+        Check if the path given is a file and if it exists.
         """
-        if not os.path.exists(self.FST_path):
-            return False        
-        return True
+        if not os.path.isfile(FST_path):
+            raise ValueError("'{}' is not a file, or it doesn't exist. Please try a different file.".format(FST_path))
     
+    def __check_FST_file_valid(self, FST_path):
+        """
+        :param FST_path: Path to the FST which may not be valid.
+
+        Check if the extension of the file is .foma, which is the only accepted file format for the FST.
+        """
+        if not Path(FST_path).suffix == ".foma":
+            raise ValueError("The file '{}' does not have extension .foma. Please provide a .foma binary file of the FST.".format(FST_path))
+
     def __get_fst_name(self):
         """
         Returns the name of the FST, which is just the stem of its file path. For example, an input of FSTs/myfst.foma return myfst.
@@ -41,7 +54,7 @@ class FST_Image:
                                 stderr=subprocess.STDOUT,
                                 shell=True
         ).decode('utf-8') 
-        print(output)
+        if output != "": print(output)
         return dot_filename
     
     def __create_png(self, dot_filepath):
@@ -62,7 +75,7 @@ class FST_Image:
 
         output = subprocess.check_output(convertToPng, 
                             shell=True).decode('utf-8')
-        print(output)
+        if output != "": print(output)
         print("Done!")
 
     def __clean_up(self, file_to_delete):
@@ -80,9 +93,6 @@ class FST_Image:
 
         Creates a png of the Finite State Transducer and puts it in the given output directory. Creates the directory if it does not exist.
         """
-        if not self.__FST_file_exists():
-            print("Sorry, couldn't find {}. Please try again.".format(self.FST_path))
-            return 
         dot_filepath = self.__create_dot_file()
         self.__create_png(dot_filepath)
         self.__clean_up(dot_filepath)
@@ -94,5 +104,9 @@ if __name__ == '__main__':
                         help="The folder you want the png image of the Finite State Transducer to be put into. By default, the folder is called FSTImages, and is created if it doesn't exist.")
     args = parser.parse_args()
 
-    fst_Image = FST_Image(args.FST_path, args.output_image_directory)
-    fst_Image.create_image()
+    try: 
+        fst_Image = FST_Image(args.FST_path, args.output_image_directory)
+        fst_Image.create_image()
+    except ValueError as e:
+        print(e)
+    

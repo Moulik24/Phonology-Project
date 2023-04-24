@@ -23,8 +23,8 @@ Currently,
 ```
 make clean
 ```
-will remove a hardcoded set of **.foma** files.
+will remove a hardcoded set of **.foma** files. Running:
 ```
 ./main
 ```
-does not overwrite the **.foma** files corresponding to the Japanese phonological rules that it does needs, and instead reads from the **.foma** file if it exists. So, if you make changes to **main.c** to modify a FST, you will not see any changes when running **./main** unless you first delete the appropriate **.foma** files.
+does not overwrite **.foma** files, instead reading from **.foma** files if they exists. So, if you make changes to **main.c** to modify a FST, you will not see any changes when running **./main** unless you first delete the appropriate **.foma** files.

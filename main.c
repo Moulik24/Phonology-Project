@@ -11,12 +11,35 @@ char* voiceless_consonants_and_EOW = "[k|s|t|ts|ch|h|f|p|.#.]";
 char* voiced_consonants = "[g|z|d|j|dz|n|b|m|y|r|w]";
 
 char* high_vowels = "[i|u]";
-char* high_vowel_i = "i";
-char* high_vowel_u = "u";
-char* devoiced_high_vowel_i = "i̥";
-char* devoiced_high_vowel_u = "u̥";
+char* i_high_vowel = "i";
+char* u_high_vowel = "u";
+char* i_devoiced_high_vowel = "i̥";
+char* u_devoiced_high_vowel = "u̥";
 
 char* low_vowels = "[a|e|o]";
+
+int rewrite_rule_max_size = sizeof(char)*80;
+
+/*
+A rewrite rule that the foma API accepts is of the form:
+A -> B || C _ D
+where A, B, C, and D are all strings. 
+*/
+char *rewrite_rule(char *A, char *B, char *C, char *D) {
+    char *rewrite_rule_regex = malloc(rewrite_rule_max_size);    
+    snprintf(rewrite_rule_regex, rewrite_rule_max_size, "%s%s%s%s%s%s%s", A, " -> ", B, " || ", C, " _ ", D);
+    return rewrite_rule_regex;
+}
+
+/*
+Used to compose two regex rule strings - equivalent to building two separate fsts for the rules, and then composing the fsts.
+*/
+char *compose_regex(char *regex_1, char *regex_2) {
+    int composed_regex_max_size = 2*rewrite_rule_max_size;
+    char *composed_regex = malloc(composed_regex_max_size);
+    snprintf(composed_regex, composed_regex_max_size, "%s%s%s", regex_1, " .o. ", regex_2);
+    return composed_regex;
+}
 
 struct fsm *Lexcion() {
     struct fsm *net;
@@ -24,18 +47,21 @@ struct fsm *Lexcion() {
     return net;
 }
 
+/*
+Generates a Finite State Transducer that does the Japanese phonological rule called High Vowel Devoicing.
+*/
 struct fsm *HVD() {
+    char *i_high_vowel_devoicing_regex = rewrite_rule(i_high_vowel, i_devoiced_high_vowel, voiceless_consonants, voiceless_consonants_and_EOW);
+    char *u_high_vowel_devoicing_regex = rewrite_rule(u_high_vowel, u_devoiced_high_vowel, voiceless_consonants, voiceless_consonants_and_EOW);
+    char *high_vowel_devoicing_regex = compose_regex(i_high_vowel_devoicing_regex, u_high_vowel_devoicing_regex);
+    
     struct fsm *net;
-    char high_vowel_i_devoicing_regex[80];
-    snprintf(high_vowel_i_devoicing_regex, sizeof(high_vowel_i_devoicing_regex), "%s%s%s%s%s%s%s", high_vowel_i, " -> ", devoiced_high_vowel_i, " || ", voiceless_consonants, " _ ", voiceless_consonants_and_EOW);
-    
-    char high_vowel_u_devoicing_regex[80];
-    snprintf(high_vowel_u_devoicing_regex, sizeof(high_vowel_u_devoicing_regex), "%s%s%s%s%s%s%s", high_vowel_u, " -> ", devoiced_high_vowel_u, " || ", voiceless_consonants, " _ ", voiceless_consonants_and_EOW);
-
-    char high_vowel_devoicing_regex[170];
-    snprintf(high_vowel_devoicing_regex, sizeof(high_vowel_devoicing_regex), "%s%s%s", high_vowel_i_devoicing_regex, " .o. ", high_vowel_u_devoicing_regex);
-    
     net = fsm_parse_regex(high_vowel_devoicing_regex, NULL, NULL); 
+
+    free(i_high_vowel_devoicing_regex);
+    free(u_high_vowel_devoicing_regex);
+    free(high_vowel_devoicing_regex);
+
     return net;
 }
 

@@ -16,3 +16,15 @@ Also,
 python fstImage.py -h
 ```
 provides more information about the arguments that **fstImage.py** accepts.
+
+## Some Development Details
+### Makefile
+Currently,
+```
+make clean
+```
+will remove a hardcoded set of **.foma** files. Running:
+```
+./main
+```
+does not overwrite **.foma** files, instead reading from **.foma** files if they exist. So, if you make changes to **main.c** to modify a FST, you will not see any changes when running **./main** unless you first delete the appropriate **.foma** files.

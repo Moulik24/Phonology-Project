@@ -3,6 +3,7 @@
 #include <string.h>
 #include "fomalib.h"
 
+// Categories used for writing Japanese phonological rules.
 char* all_phonemes = "[a|i|u|e|o|k|g|s|z|t|d|ts|ch|j|dz|n|h|f|b|p|m|y|r|w]*";
 
 char* voiceless_consonants = "[k|s|t|ts|ch|h|f|p]";
@@ -17,6 +18,19 @@ char* i_devoiced_high_vowel = "i̥";
 char* u_devoiced_high_vowel = "u̥";
 
 char* low_vowels = "[a|e|o]";
+
+char* n_phoneme = "n";
+
+char *bilabial_consonants = "[p|b|m]";
+char *velar_consonants_and_EOW = "[k|g|.#.]";
+char *w_glide = "w";
+char *j_glide = "j";
+
+char *bilabial_nasal = "m";
+char *velar_nasal = "ŋ";
+char *w_nasal = "w̃";
+char *j_nasal = "ȷ̃";
+
 
 int rewrite_rule_max_size = sizeof(char)*80;
 
@@ -65,6 +79,33 @@ struct fsm *HVD() {
     return net;
 }
 
+/*
+Generates a Finite State Transducer that does the Japanese phonological rule called Nasal Assimilation.
+*/
+struct fsm *Nasal_Assimilation() {
+    char *bilabial_nasal_assimilation = rewrite_rule(n_phoneme, bilabial_nasal, "", bilabial_consonants);
+    char *velar_nasal_assimilation = rewrite_rule(n_phoneme, velar_nasal, "", velar_consonants_and_EOW);
+    char *w_glide_nasal_assimilation = rewrite_rule(n_phoneme, w_nasal, "", w_glide);
+    char *j_glide_nasal_assimilation = rewrite_rule(n_phoneme, j_nasal, "", j_glide);
+
+    char *nasal_assimilation = compose_regex(bilabial_nasal_assimilation, 
+                                    compose_regex(velar_nasal_assimilation, 
+                                        compose_regex(w_glide_nasal_assimilation, j_glide_nasal_assimilation)
+                                    )
+                                );
+    
+    struct fsm *net;
+    net = fsm_parse_regex(nasal_assimilation, NULL, NULL); 
+    
+    free(bilabial_nasal_assimilation);
+    free(velar_nasal_assimilation);
+    free(w_glide_nasal_assimilation);
+    free(j_glide_nasal_assimilation);
+    free(nasal_assimilation);
+
+    return net;
+}
+
 int main() {
     // Construct the lexicon with phonological rules applied
     char* binary_file_name = "JapaneseFST.foma";
@@ -74,10 +115,13 @@ int main() {
         printf("Successfully read!\n");
     }
     if(japanese_fst == NULL) {
-        printf("Creating/overwriting %s...\n", binary_file_name);
+        printf("Creating %s...\n", binary_file_name);
         struct fsm *lexicon = Lexcion();
         struct fsm *hvd = HVD();
-        japanese_fst = fsm_compose(lexicon, hvd);
+        struct fsm *nasal_assimilation = Nasal_Assimilation();
+        japanese_fst = fsm_compose(lexicon, 
+                            fsm_compose(hvd, nasal_assimilation)
+                        );
         if((fsm_write_binary_file(japanese_fst, binary_file_name) == 0)) {
             printf("Done!\n");
         } else {

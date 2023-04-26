@@ -19,7 +19,7 @@ char* u_devoiced_high_vowel = "u̥";
 
 char* low_vowels = "[a|e|o]";
 
-char* n_phoneme = "n";
+char* n_nasal = "n";
 
 char *bilabial_consonants = "[p|b|m]";
 char *velar_consonants_and_EOW = "[k|g|.#.]";
@@ -83,10 +83,10 @@ struct fsm *HVD() {
 Generates a Finite State Transducer that does the Japanese phonological rule called Nasal Assimilation.
 */
 struct fsm *Nasal_Assimilation() {
-    char *bilabial_nasal_assimilation = rewrite_rule(n_phoneme, bilabial_nasal, "", bilabial_consonants);
-    char *velar_nasal_assimilation = rewrite_rule(n_phoneme, velar_nasal, "", velar_consonants_and_EOW);
-    char *w_glide_nasal_assimilation = rewrite_rule(n_phoneme, w_nasal, "", w_glide);
-    char *j_glide_nasal_assimilation = rewrite_rule(n_phoneme, j_nasal, "", j_glide);
+    char *bilabial_nasal_assimilation = rewrite_rule(n_nasal, bilabial_nasal, "", bilabial_consonants);
+    char *velar_nasal_assimilation = rewrite_rule(n_nasal, velar_nasal, "", velar_consonants_and_EOW);
+    char *w_glide_nasal_assimilation = rewrite_rule(n_nasal, w_nasal, "", w_glide);
+    char *j_glide_nasal_assimilation = rewrite_rule(n_nasal, j_nasal, "", j_glide);
 
     char *nasal_assimilation = compose_regex(bilabial_nasal_assimilation, 
                                     compose_regex(velar_nasal_assimilation, 

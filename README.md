@@ -42,16 +42,50 @@ Need to say what the spread output symbols as well as the eng actually mean and 
 ## Installation
 First, you will need to install foma. See the **Installation** section at https://fomafst.github.io/. 
 Next, you will need a C-compiler such as **gcc**. 
-**fstImage.py** will require you to install Python. However, this script is only used for viewing images of the Finite State Transducers. So, it is not necessary if you will just be using the REPL to get Japanese pronunciations.
+**fstImage.py** will require you to install Python. However, this script is only used for viewing images of the Finite State Transducers. So, it is not necessary if you will just be using the REPL to get Japanese pronunciations. Additionally, **fstImage.py** only currently uses modules from the standard library, so you shouldn't have to install any further modules in order to run it. For development, I used **pytest**, which does need to be installed in order to run [tests/test_fstImage.py](tests/test_fstImage.py).
 
 ### Mac Users
-To install gcc
+First, install [Command Line Tools](https://developer.apple.com/forums/thread/13781#:~:text=They%20allow%20programmers%20to%20compile,prompt%20you%20to%20install%20them.) which will allow to do compile programs among other tasks. You can do so by typing: 
+```
+xcode-select --install
+```
+Next, install the package manager Homebrew. Open your [Terminal](https://support.apple.com/guide/terminal/open-or-quit-terminal-apd5265185d-f365-44cb-8b09-71a064a42125/mac#:~:text=Terminal%20for%20me-,Open%20Terminal,%2C%20then%20double%2Dclick%20Terminal.). At the prompt, type in:
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+to install Homebrew. <br>
+Once it finishes, we'll install **gcc**, a compiler to compile C-code. Type in:
+```
+brew install gcc
+```
+to install gcc. <br>
+Type in 
+```
+brew install foma
+```
+to install foma. <br>
+Finally, you can get this repository's code onto your local computer by using [Git](https://git-scm.com/). Most Macs come with git pre-installed. Type:
+```
+git version
+```
+to verify that it is installed. If it is not, type:
+```
+brew install git
+```
+to install git. <br>
+Now, you can navigate to some folder using your terminal. Then type in 
+```
+git clone https://github.com/Moulik24/Phonology-Project.git
+```
+Since Python should also come pre-installed on your Mac, you should (hopefully) have everything set-up now! <br>
 
-Python should come pre-installed. 
-
+Here are some other articles I used:
+*[What does Homebrew do and how do you install it?](https://brew.sh/)
+*[How to install gcc on Mac](https://osxdaily.com/2023/05/02/how-install-gcc-mac/)
+*[install foma with brew](https://formulae.brew.sh/formula/foma)
 
 ### Windows Users
-To install gcc
+To install gcc <br>
 
 To install Python, 
 

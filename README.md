@@ -36,27 +36,30 @@ There are two parts to High Vowel Devoicing in Japanese (source: Japanese: Revis
 A short high vowel is devoiced: <br>
 * between two voiceless consonants <br>
 * between a voiceless consonant and a pause <br>
+
 In the code, this is implemented as:
-* i -> i̥ between any pairs of sounds from k,s,t,ts,ch,h,f,p. The pause in this case is the end of a word. <br>
+* i -> i̥ between any pairs of sounds from k, s, t, ts, ch, h, f, p. The pause in this case is the end of a word. <br>
 * u -> u̥ in the same environment as above. <br>
-Here is a [Youtube video](https://www.youtube.com/watch?v=ulhd9fl2Gug&ab_channel=CampanasdeJapanese) with more information and pronounciation.
+
+Here is a [Youtube video](https://www.youtube.com/watch?v=ulhd9fl2Gug&ab_channel=CampanasdeJapanese) with more information on High Vowel Devoicing and its pronunciation.
 
 ### Nasal Assimilation
 There are three parts to Nasal Assimilation in Japanese (source: Introductory Phonology by Bruce Hayes, Ch. 3, Exercise 3). <br>
-* n assimilates to the Place of Articulation of the following consonant <br>
-* n becomes ŋ word finally <br>
-* n becomes a glide before a glide <br>
+* n assimilates to the Place of Articulation of the following consonant. <br>
+* n becomes ŋ word finally. <br>
+* n becomes a glide before a glide. <br>
+
 In the code, this is implemented as:
-* n -> m before p,m,b <br>
+* n -> m before p,m,b. <br>
 * n -> ŋ before k,g,.#. (end of word symbol) <br>
-* n -> w̃ before w <br>
-* n -> ȷ̃ before j <br>
+* n -> w̃ before w. <br>
+* n -> ȷ̃ before j. <br>
 
 Here's a quick [Youtube video](https://www.youtube.com/watch?v=xpzpbuFHVVU&ab_channel=Dogen) on just the pronunciation of **ŋ**. <br>
 The ~ symbol represents nasalization, so **w̃** is pronounced like **w** with some nasal quality. 
 
 ### Output Words
-The output words have all the same sounds as the Lexicon, with the following additions, which we explain in the above two sections:
+The output words have all the same letters as the Lexicon, with the following additions, which we explained in the above two sections:
 ```
 i̥ u̥ w̃ ȷ̃ ŋ
 ```
@@ -114,10 +117,10 @@ Python should also come pre-installed on your Mac. <br>
 Now, see [Downloading and Running the Code](#downloading-and-running-the-code).
 
 Here are some other articles I used: <br>
-*[What does Homebrew do and how do you install it?](https://brew.sh/) <br>
-*[How to install gcc on Mac](https://osxdaily.com/2023/05/02/how-install-gcc-mac/) <br>
-*[install foma with brew](https://formulae.brew.sh/formula/foma) <br>
-
+* [What does Homebrew do and how do you install it?](https://brew.sh/) <br>
+* [How to install gcc on Mac](https://osxdaily.com/2023/05/02/how-install-gcc-mac/) <br>
+* [install foma with brew](https://formulae.brew.sh/formula/foma) <br>
+ 
 ### Windows Users
 I would recommend using WSL, Windows Subsystem for Linux, see the [installation notes](https://learn.microsoft.com/en-us/windows/wsl/install). <br>
 After installation, open wsl from your search bar. To install gcc, type: 

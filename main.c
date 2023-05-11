@@ -151,37 +151,39 @@ struct fsm **generate_all_dependent_fsts() {
 }
 
 int main() {
-    // Create a directory to hold all the foma files.
+    // Directory to hold all the foma files.
     mkdir("FSTs", 0777);
 
     // Construct the lexicon with phonological rules applied
-    char* binary_file_name = "FSTs/JapaneseFST.foma";
-    printf("Attempting to read FST from %s...\n", binary_file_name);
-    struct fsm *japanese_fst = fsm_read_binary_file(binary_file_name);
+    char* japanese_fst_filename = "FSTs/JapaneseFST.foma";
+    printf("Attempting to read FST from %s...\n", japanese_fst_filename);
+    struct fsm *japanese_fst = fsm_read_binary_file(japanese_fst_filename);
     if(japanese_fst != NULL) {
-        printf("Successfully read!\n");
-        //TODO: generate the other files if they're not there.
+        printf("Successfully read %s!\n", japanese_fst_filename);
     }
     if(japanese_fst == NULL) {
-        printf("Creating %s...\n", binary_file_name);
+        printf("Creating %s...\n", japanese_fst_filename);
         struct fsm **all_dependent_fsts;
-        all_dependent_fsts = generate_all_dependent_fsts();
-        
+        all_dependent_fsts = generate_all_dependent_fsts();        
         japanese_fst = fsm_compose(all_dependent_fsts[0], 
                             fsm_compose(all_dependent_fsts[1], all_dependent_fsts[2])
                         );
+
         free(all_dependent_fsts);
-        if((fsm_write_binary_file(japanese_fst, binary_file_name) == 0)) {
-            printf("Wrote out %s!\n", binary_file_name);
+
+        if((fsm_write_binary_file(japanese_fst, japanese_fst_filename) == 0)) {
+            printf("Wrote out %s!\n", japanese_fst_filename);
             printf("Done!\n");
         } else {
             perror("Error writing fsm to binary file");
             exit(EXIT_FAILURE);
         }
     }
+
     struct apply_handle *ah = apply_init(japanese_fst);
     ah = apply_init(japanese_fst);
     
+    // Run the REPL
     printf("\nWelcome! Enter your word after the prompt \"Please enter your word\". When you want to stop the program, type EXIT after this prompt.\n\n");
     
     char input_word[20];

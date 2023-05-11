@@ -1,7 +1,10 @@
+#include "fomalib.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "fomalib.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 // Categories used for writing Japanese phonological rules.
 char* all_phonemes = "[a|i|u|e|o|k|g|s|z|t|d|ts|ch|j|dz|n|h|f|b|p|m|y|r|w]*";
@@ -55,7 +58,11 @@ char *compose_regex(char *regex_1, char *regex_2) {
     return composed_regex;
 }
 
-struct fsm *Lexcion() {
+/*
+Generates a Finite State Transducer that represents all allowed Japanese words.
+Currently, this is a word that is made up of phonemes in all_phonemes, but without regard to sequences of words.
+*/
+struct fsm *Lexicon() {
     struct fsm *net;
     net = fsm_parse_regex(all_phonemes, NULL, NULL);
     return net;
@@ -106,31 +113,77 @@ struct fsm *Nasal_Assimilation() {
     return net;
 }
 
+int dependent_fst_count = 3;
+char *all_dependent_fst_names[] = {"FSTs/Lexicon.foma", "FSTs/High_Vowel_Devoicing.foma", "FSTs/Nasal_Assimilation.foma"};
+
+/*
+Makes all the Finite State Transducers that go into the final JapaneseFST. 
+Writes out the foma files of these dependent FSTs if they don't exist.
+Returns a double pointer to all the dependent FSTs.
+*/
+struct fsm **generate_all_dependent_fsts() {
+    struct fsm **all_dependent_fsts = malloc(dependent_fst_count*sizeof(struct fsm*));
+
+    for(int i = 0; i < dependent_fst_count; i++) {
+        all_dependent_fsts[i] = fsm_read_binary_file(all_dependent_fst_names[i]);
+
+        if(all_dependent_fsts[i] == NULL) {
+            if(i == 0) {
+                all_dependent_fsts[i] = Lexicon();
+            }
+            else if(i == 1) {
+                all_dependent_fsts[i] = HVD();
+            }
+            else if(i == 2) {
+                all_dependent_fsts[i] = Nasal_Assimilation();
+            }
+
+            if((fsm_write_binary_file(all_dependent_fsts[i], all_dependent_fst_names[i]) == 0)) {
+                printf("Wrote out %s!\n", all_dependent_fst_names[i]);
+            } else {
+                perror("Error writing out fsm to binary file");
+                exit(EXIT_FAILURE);
+            }
+        }
+    } 
+
+    return all_dependent_fsts;
+}
+
 int main() {
+    // Directory to hold all the foma files.
+    mkdir("FSTs", 0777);
+
     // Construct the lexicon with phonological rules applied
-    char* binary_file_name = "JapaneseFST.foma";
-    printf("Attempting to read FST from %s...\n", binary_file_name);
-    struct fsm *japanese_fst = fsm_read_binary_file(binary_file_name);
+    char* japanese_fst_filename = "FSTs/JapaneseFST.foma";
+    printf("Attempting to read FST from %s...\n", japanese_fst_filename);
+    struct fsm *japanese_fst = fsm_read_binary_file(japanese_fst_filename);
     if(japanese_fst != NULL) {
-        printf("Successfully read!\n");
+        printf("Successfully read %s!\n", japanese_fst_filename);
     }
     if(japanese_fst == NULL) {
-        printf("Creating %s...\n", binary_file_name);
-        struct fsm *lexicon = Lexcion();
-        struct fsm *hvd = HVD();
-        struct fsm *nasal_assimilation = Nasal_Assimilation();
-        japanese_fst = fsm_compose(lexicon, 
-                            fsm_compose(hvd, nasal_assimilation)
+        printf("Creating %s...\n", japanese_fst_filename);
+        struct fsm **all_dependent_fsts;
+        all_dependent_fsts = generate_all_dependent_fsts();        
+        japanese_fst = fsm_compose(all_dependent_fsts[0], 
+                            fsm_compose(all_dependent_fsts[1], all_dependent_fsts[2])
                         );
-        if((fsm_write_binary_file(japanese_fst, binary_file_name) == 0)) {
+
+        free(all_dependent_fsts);
+
+        if((fsm_write_binary_file(japanese_fst, japanese_fst_filename) == 0)) {
+            printf("Wrote out %s!\n", japanese_fst_filename);
             printf("Done!\n");
         } else {
             perror("Error writing fsm to binary file");
+            exit(EXIT_FAILURE);
         }
     }
+
     struct apply_handle *ah = apply_init(japanese_fst);
     ah = apply_init(japanese_fst);
     
+    // Run the REPL
     printf("\nWelcome! Enter your word after the prompt \"Please enter your word\". When you want to stop the program, type EXIT after this prompt.\n\n");
     
     char input_word[20];

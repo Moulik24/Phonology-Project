@@ -22,7 +22,7 @@ geŋgogaku̥
 We see that the **n** in the input word is a **ŋ** in the output word. The **u** in the input word becomes a **u̥** in the output word. See the Background section for more information on these sounds. 
 
 ## Background
-[Phonology](https://en.wikipedia.org/wiki/Phonology) is a branch of linguistics that studies the sound systems of human language. It is widely accepted that the words that speakers store in their brain, their Lexicon, is in an 'underlying representation,' which is different from the 'surface representation,' which is how the word is actually pronounced. This project considers the underlying sounds **i**, **u**, and **n**, which are pronounced differently in their surface forms.
+[Phonology](https://en.wikipedia.org/wiki/Phonology) is a branch of linguistics that studies the sound systems of human language. It is widely accepted that the words that speakers store in their brain, their Lexicon, is in an 'underlying representation,' which is different from the 'surface representation,' which is how the word is actually pronounced. This can be reflected in spelling, where a word is spelled according its underlying representation, but pronounced in a different way. This project considers the underlying sounds **i**, **u**, and **n**, which are pronounced differently in their surface forms.
 
 ### The Lexicon
 Currently, the REPL allows any word as long as it is made up of the following letters:
@@ -53,15 +53,15 @@ In the code, this is implemented as:
 * n -> m before p,m,b. <br>
 * n -> ŋ before k,g,.#. (end of word symbol) <br>
 * n -> w̃ before w. <br>
-* n -> ȷ̃ before j. <br>
+* n -> ỹ before y. <br>
 
 Here's a quick [Youtube video](https://www.youtube.com/watch?v=xpzpbuFHVVU&ab_channel=Dogen) on just the pronunciation of **ŋ**. <br>
-The ~ symbol represents nasalization, so **w̃** is pronounced like **w** with some nasal quality. 
+The ~ symbol represents nasalization, so **w̃** is pronounced like **w** with some nasal quality. For example, the word *yanwari* 'softly', would be pronounced with the **n** becoming a **w** with a nasal quality. The word would then be pronounced as *yaw̃wari*. 
 
 ### Output Words
-The output words have all the same letters as the Lexicon, with the following additions, which we explained in the above two sections:
+The output words have all the same letters as the Lexicon, with the following additions, which are explained in [High Vowel Devoicing](#high-vowel-devoicing) and [Nasal Assimilation](#nasal-assimilation) sections:
 ```
-i̥ u̥ w̃ ȷ̃ ŋ
+i̥ u̥ w̃ ỹ ŋ
 ```
 
 ## Installation

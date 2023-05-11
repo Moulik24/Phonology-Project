@@ -27,12 +27,12 @@ char* n_nasal = "n";
 char *bilabial_consonants = "[p|b|m]";
 char *velar_consonants_and_EOW = "[k|g|.#.]";
 char *w_glide = "w";
-char *j_glide = "j";
+char *y_glide = "y";
 
 char *bilabial_nasal = "m";
 char *velar_nasal = "ŋ";
 char *w_nasal = "w̃";
-char *j_nasal = "ȷ̃";
+char *y_nasal = "ỹ";
 
 
 int rewrite_rule_max_size = sizeof(char)*80;
@@ -93,11 +93,11 @@ struct fsm *Nasal_Assimilation() {
     char *bilabial_nasal_assimilation = rewrite_rule(n_nasal, bilabial_nasal, "", bilabial_consonants);
     char *velar_nasal_assimilation = rewrite_rule(n_nasal, velar_nasal, "", velar_consonants_and_EOW);
     char *w_glide_nasal_assimilation = rewrite_rule(n_nasal, w_nasal, "", w_glide);
-    char *j_glide_nasal_assimilation = rewrite_rule(n_nasal, j_nasal, "", j_glide);
+    char *y_glide_nasal_assimilation = rewrite_rule(n_nasal, y_nasal, "", y_glide);
 
     char *nasal_assimilation = compose_regex(bilabial_nasal_assimilation, 
                                     compose_regex(velar_nasal_assimilation, 
-                                        compose_regex(w_glide_nasal_assimilation, j_glide_nasal_assimilation)
+                                        compose_regex(w_glide_nasal_assimilation, y_glide_nasal_assimilation)
                                     )
                                 );
     
@@ -107,7 +107,7 @@ struct fsm *Nasal_Assimilation() {
     free(bilabial_nasal_assimilation);
     free(velar_nasal_assimilation);
     free(w_glide_nasal_assimilation);
-    free(j_glide_nasal_assimilation);
+    free(y_glide_nasal_assimilation);
     free(nasal_assimilation);
 
     return net;

@@ -1,7 +1,7 @@
 # Japanese Pronunication Using Finite State Transducers
 ## Introduction
 ### Motivation
-This is my term project for Advanced Phonology, Linguistics 510, at UW-Madison. <br>
+Hi, I'm Moulik Mehta, and this is my term project for Advanced Phonology, Linguistics 510, at UW-Madison, Spring 2023. <br>
 I think that this project could be useful for people learning Japanese who want some visual reinforcement as to how a Japanese word would be pronounced. I also think that this project could be useful for people interested in [Computational Phonology](https://aclweb.org/aclwiki/Computational_Phonology), or those interested in phonology to see how it can be 'computerized,' or lastly those interested in computer science wanting to more of its applications. 
 
 ### Implementation

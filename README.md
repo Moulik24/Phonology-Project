@@ -176,6 +176,62 @@ python fstImage.py -h
 ```
 provides more information about the arguments that **fstImage.py** accepts.
 
+## Some words to get you started
+Here is a list of words to get you started, adapted from Introductory Phonology by Bruce Hayes, Ch. 3, Exercise 3, as well as Japanese: Revised Edition by Shoichi Iwasaki to reflect a romanized writing system. Try plugging them into the REPL!
+
+Here are some words that should change with Nasal Assimilation:
+
+|Word           |Meaning|
+|---            |---    |
+|oneesan        |'older sister'|
+|hon            |'book'|  
+|pan            |'bread'
+|shizun         |'season'|
+|den            |'palace'|
+|nipponginkou   |'Bank of Japan'|
+|nihonppoi      |'Japanesey'|
+|zanburi        |'with a splash'|
+|shinmiri       |'quiet sympathy'|
+|honmo          |'book-too'|
+|honya          |'bookstore'|
+|bonyari        |'vacantly'|
+|janwari        |'softly'|
+|honwa          |'book-topic'|
+
+Words that should change with High Vowel Devoicing:
+
+|Word           |Meaning|
+|---            |---   |
+|kutsu          |'shoes'|
+|futa           |'lid'|
+|shuto          |'capital city'|
+|chikyuu        |'earth'|
+|kutsu          |'shoes'|
+|kichi          |'military station'|
+|kishi          |'shore'|
+|kushi          |'comb'|
+|nushi          |'owner'|
+
+Words that should change with both Nasal Assimilation and High Vowel Devoicing:
+
+|Word           |Meaning|
+|---            |---    |
+|gengogaku      |'linguistics'|
+|ongaku         |'music'|
+|zanki          |'remaining time'|
+
+Words that should stay the same:
+
+|Word           |Meaning|
+|---            |---    |
+|mi             |'body'|
+|me             |'eye'|
+|shima          |'island'|
+|ikebana        |'flower arranging'|     
+|fujiyama       |'Mount Fuji'|
+|arimasentte    |'that there isn't'|
+|honda          |'brand of automobile'|
+
 ## Some Development Details
 ### Makefile
 Currently,

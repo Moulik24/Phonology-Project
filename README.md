@@ -274,11 +274,11 @@ Use the REPL or try figuring out what the pronunication of the following words s
 |honda          |'brand of automobile'|
 
 ## Getting an Image of the FST
-First, your FST must be in a binary file with file extension **.foma**. This project provides all **.foma** files involved in making the combined FST, [JapaneseFST.foma](FSTs/JapaneseFST.foma). All of these **foma** files are in the [FSTs](FSTs/) folder, and their images are in the [FSTImages](FSTImages). However, if you would like to try this process yourself, or get an image of a different **foma** file that you created, for example **myFST.foma**, you can run:
+First, your FST must be in a binary file with file extension **.foma**. This project provides all **.foma** files involved in making the combined FST, [JapaneseFST.foma](FSTs/JapaneseFST.foma). All of these **foma** files are in the [FSTs](FSTs/) folder, and their images are in the [FSTImages](FSTImages) folder. However, if you would like to try this process yourself, or get an image of a different **foma** file that you created, for example **myFST.foma**, you can run:
 ```
 python fstImage.py myFST.foma
 ```
-This will run some commands in the **foma** interpreter to generate a png image of the FST, **myFST.png**, which is put into the **FSTImages**. You can optionally specify a different directory that you want the image to be put into, for example **myDirectory**, like so:
+This will run some commands in the **foma** interpreter to generate a png image of the FST, **myFST.png**, which is put into your **FSTImages** folder by default. You can optionally specify a different directory that you want the image to be put into, for example **myDirectory**, like so:
 ```
 python fstImage.py myFST.foma myDirectory
 ```

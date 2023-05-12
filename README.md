@@ -69,7 +69,7 @@ Note that **fstImage.py** will require you to install Python. However, this scri
 Additionally, **fstImage.py** only currently uses modules from the standard library, so you shouldn't have to install any further modules in order to run it. For development, I used **pytest**, which does need to be installed in order to run [tests/test_fstImage.py](tests/test_fstImage.py). 
 
 ### The Minimum
-If you don't want to have all the code on your local computer, or are finding certain things tricky to install, you can just download [JapaneseFST.foma](JapaneseFST.foma) from this github page. You will still need to install **foma**, see the below sections on how to do so, or look at [foma's github page](https://fomafst.github.io/) if you want to try following their instructions. <br>
+If you don't want to have all the code on your local computer, or are finding certain things tricky to install, you can just download [JapaneseFST.foma](FSTs/JapaneseFST.foma) from this github page. This **foma** file is the combination of the [Lexicon](#the-lexicon), [High Vowel Devoicing](#high-vowel-devoicing) and [Nasal Assimilation](#nasal-assimilation). Thus, it is the only Finite State Transducer that you need. You will still need to install **foma**, see the below sections on how to do so, or look at [foma's github page](https://fomafst.github.io/) if you want to try following their instructions. <br>
 Once you have foma installed, open your Terminal, and type in:
 ```
 foma
@@ -161,13 +161,13 @@ to run the file! <br>
 See below if you are curious about getting images of the created FSTs.
 
 ## Getting an Image of the FST
-First, your FST must be in a binary file with file extension **.foma**. Running the Makefile will automatically generate some FSTs. To get a png image of a certain FST, for example **JapaneseFST.foma**, you can run:
+First, your FST must be in a binary file with file extension **.foma**. This project provides all **.foma** files involved in making the combined FST, [JapaneseFST.foma](FSTs/JapaneseFST.foma), as well their images, in [FSTImages](FSTImages). However, if you would like to try this process yourself, or get an image of a different **foma** file that you created, for example **myFST.foma**, you can run:
 ```
-python fstImage.py JapaneseFST.foma
+python fstImage.py myFST.foma
 ```
-This will run some commands in the **foma** interpreter to generate a png image of the FST. A directory called **FSTImages** in your current directory is automatically created, and **JapaneseFST.png** is put into this directory. You can optionally specify a different directory that you want the image to be put into, for example **myDirectory**, like so:
+This will run some commands in the **foma** interpreter to generate a png image of the FST, **myFST.png**, which is put into the **FSTImages**. You can optionally specify a different directory that you want the image to be put into, for example **myDirectory**, like so:
 ```
-python fstImage.py JapaneseFST.foma myDirectory
+python fstImage.py myFST.foma myDirectory
 ```
 If **myDirectory** does not already exist, it is created. 
 Also, 
@@ -238,7 +238,7 @@ Currently,
 ```
 make clean
 ```
-will remove a hardcoded set of **.foma** files. Running:
+will delete the **FSTs** directory. Running:
 ```
 ./main
 ```

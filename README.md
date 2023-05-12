@@ -1,7 +1,7 @@
-# Phonology-Project
-This is my term project for Advanced Phonology, Ling 510, at UW-Madison. <br>
-This project implements a read-eval-print loop (REPL), where the user enters a Japanese word in its romanized, or English, spelling, and the output suggests how that word would be pronounced. Currently, we are only considering the effects of Nasal Assimilation, which is how the sound **n** changes, and High Vowel Devoicing, which is how the sounds **i** and **u** change in certain sound environments. <br>
-To do this, I used the **foma** C-library ([see documentation](https://code.google.com/archive/p/foma/)). foma allowed me to create [Finite State Transducers](https://en.wikipedia.org/wiki/Finite-state_transducer) just by supplying Regular Expressions. An input Japanese word is then run through a Finite State Transducer to get the output suggesting its pronunciation. See the [foma github page](https://fomafst.github.io/) for more information.<br><br>
+# Japanese Pronunication Using Finite State Transducers
+This is my term project for Advanced Phonology, Linguistics 510, at UW-Madison. <br>
+This project implements a read-eval-print loop (REPL), where the user enters a Japanese word in its romanized, or English, spelling, and the output suggests how that word would be pronounced. Currently, we are only considering the effects of [Nasal Assimilation](#nasal-assimilation), which is how the sound **n** changes, and [High Vowel Devoicing](#high-vowel-devoicing), which is how the sounds **i** and **u** change in certain sound environments. <br>
+To do this, I used the **foma** C-library ([see documentation](https://code.google.com/archive/p/foma/)). foma allowed me to create [Finite State Transducers](https://en.wikipedia.org/wiki/Finite-state_transducer) just by supplying [Regular Expressions](https://en.wikipedia.org/wiki/Regular_expression). An input Japanese word is then run through a Finite State Transducer to get the output suggesting its pronunciation. See the [foma github page](https://fomafst.github.io/) for more information.<br><br>
 
 Let's try a simple word. 散歩 (さんぽ) 'walk; stroll' has romanized spelling *sanpo.* We put this into the REPL:
 ```
@@ -19,10 +19,10 @@ gengogaku
 Resulting word is: 
 geŋgogaku̥
 ```
-We see that the **n** in the input word is a **ŋ** in the output word. The **u** in the input word becomes a **u̥** in the output word. See the Background section for more information on these sounds. 
+We see that the **n** in the input word is a **ŋ** in the output word. The **u** in the input word becomes a **u̥** in the output word. See the [Nasal Assimilation](#nasal-assimilation) and [High Vowel Devoicing](#high-vowel-devoicing) sections respectively for more information on these sounds. 
 
 ## Background
-[Phonology](https://en.wikipedia.org/wiki/Phonology) is a branch of linguistics that studies the sound systems of human language. It is widely accepted that the words that speakers store in their brain, their Lexicon, is in an 'underlying representation,' which is different from the 'surface representation,' which is how the word is actually pronounced. This can be reflected in spelling, where a word is spelled according its underlying representation, but pronounced in a different way. This project considers the underlying sounds **i**, **u**, and **n**, which are pronounced differently in their surface forms.
+[Phonology](https://en.wikipedia.org/wiki/Phonology) is a branch of linguistics that studies the sound systems of human language. It is widely accepted that the words that speakers store in their brain, their Lexicon, is in an 'underlying representation.' This is different from the 'surface representation,' which is how the word is actually pronounced. This process can be reflected in spelling, where a word may be spelled according its underlying representation, but pronounced in a different way. This project considers the underlying sounds **i**, **u**, and **n**, which are pronounced differently in their surface forms.
 
 ### The Lexicon
 Currently, the REPL allows any word as long as it is made up of the following letters:
@@ -34,11 +34,11 @@ These are the allowed letters used in the romanized spelling of Japanese. Note t
 ### High Vowel Devoicing
 There are two parts to High Vowel Devoicing in Japanese (source: Japanese: Revised Edition by Shoichi Iwasaki). <br>
 A short high vowel is devoiced: <br>
-* between two voiceless consonants <br>
-* between a voiceless consonant and a pause <br>
+* between two voiceless consonants. <br>
+* between a voiceless consonant and a pause. <br>
 
 In the code, this is implemented as:
-* i -> i̥ between any pairs of sounds from k, s, t, ts, ch, h, f, p. The pause in this case is the end of a word. <br>
+* i -> i̥ between any pairs of sounds from k, s, t, ts, ch, h, f, p. The pause in this case is the end of a word, its symbol being .#.. <br>
 * u -> u̥ in the same environment as above. <br>
 
 Here is a [Youtube video](https://www.youtube.com/watch?v=ulhd9fl2Gug&ab_channel=CampanasdeJapanese) with more information on High Vowel Devoicing and its pronunciation.
@@ -51,7 +51,7 @@ There are three parts to Nasal Assimilation in Japanese (source: Introductory Ph
 
 In the code, this is implemented as:
 * n -> m before p,m,b. <br>
-* n -> ŋ before k,g,.#. (end of word symbol) <br>
+* n -> ŋ before k,g,.#. (end of word symbol). <br>
 * n -> w̃ before w. <br>
 * n -> ỹ before y. <br>
 
@@ -59,7 +59,7 @@ Here's a quick [Youtube video](https://www.youtube.com/watch?v=xpzpbuFHVVU&ab_ch
 The ~ symbol represents nasalization, so **w̃** is pronounced like **w** with some nasal quality. For example, the word *yanwari* 'softly', would be pronounced with the **n** becoming a **w** with a nasal quality. The word would then be pronounced as *yaw̃wari*. 
 
 ### Output Words
-The output words have all the same letters as the Lexicon, with the following additions, which are explained in [High Vowel Devoicing](#high-vowel-devoicing) and [Nasal Assimilation](#nasal-assimilation) sections:
+The output words have all the same letters as the Lexicon, with the following additions, which are explained in the [High Vowel Devoicing](#high-vowel-devoicing) and [Nasal Assimilation](#nasal-assimilation) sections:
 ```
 i̥ u̥ w̃ ỹ ŋ
 ```
@@ -69,7 +69,7 @@ Note that **fstImage.py** will require you to install Python. However, this scri
 Additionally, **fstImage.py** only currently uses modules from the standard library, so you shouldn't have to install any further modules in order to run it. For development, I used **pytest**, which does need to be installed in order to run [tests/test_fstImage.py](tests/test_fstImage.py). 
 
 ### The Minimum
-If you don't want to have all the code on your local computer, or are finding certain things tricky to install, you can just download [JapaneseFST.foma](JapaneseFST.foma) from this github page. You will still need to install **foma**, see the below sections on how to do so, or look at [foma's github page](https://fomafst.github.io/) if you want to try following their instructions. <br>
+If you don't want to have all the code on your local computer, or are finding certain things tricky to install, you can just download [JapaneseFST.foma](JapaneseFST.foma) from this github page. You will still need to install **foma** - see the [Mac Users](#mac-users) or [Windows Users](#windows-users) sections to see how to do so, or look at [foma's github page](https://fomafst.github.io/) if you want to try following their instructions. <br><br>
 Once you have foma installed, open your Terminal, and type in:
 ```
 foma
@@ -97,14 +97,17 @@ Next, install the package manager Homebrew. To do so, open your [Terminal](https
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
-Once it finishes, we'll install **gcc**, a compiler to compile C-code. Type in:
-```
-brew install gcc
-```
-To install foma, type in: 
+Once it finishes, install foma by typing in:
 ```
 brew install foma
 ```
+This is as far as you need to go if you're doing [The Minimum](#the-minimum). Read on if you're looking for the full functionality of this project. <br><br>
+
+Install **gcc**, a compiler to compile C-code. Type in:
+```
+brew install gcc
+```
+
 Finally, you can get this repository's code onto your local computer by using [Git](https://git-scm.com/). Most Macs come with git pre-installed. Type:
 ```
 git version
@@ -123,7 +126,13 @@ Here are some other articles I used: <br>
  
 ### Windows Users
 I would recommend using WSL, Windows Subsystem for Linux, see the [installation notes](https://learn.microsoft.com/en-us/windows/wsl/install). <br>
-After installation, open wsl from your search bar. To install gcc, type: 
+After installation, open wsl from your search bar. Into the prompt, to install foma type in:
+```
+sudo apt install foma
+```
+This is as far as you need to go if you're doing [The Minimum](#the-minimum). Read on if you're looking for the full functionality of this project. <br><br>
+
+To install gcc, type: 
 ```
 sudo apt update & sudo apt upgrade
 ```
@@ -144,7 +153,7 @@ sudo apt-get install git
 Now, see [Downloading and Running the Code](#downloading-and-running-the-code).
 
 ## Downloading and Running the code
-To download the code on this repository, for both Mac and WSL for Windows, open your terminal and navigate to a folder of your choice. Type 
+To download the code on this repository, for both Mac and Windows, open your terminal and navigate to a folder of your choice. Type 
 ```
 git clone https://github.com/Moulik24/Phonology-Project.git
 ```
@@ -157,24 +166,8 @@ to create a file called **main**. This is a file that when run, opens up the REP
 ```
 ./main
 ```
-to run the file! <br>
-See below if you are curious about getting images of the created FSTs.
-
-## Getting an Image of the FST
-First, your FST must be in a binary file with file extension **.foma**. Running the Makefile will automatically generate some FSTs. To get a png image of a certain FST, for example **JapaneseFST.foma**, you can run:
-```
-python fstImage.py JapaneseFST.foma
-```
-This will run some commands in the **foma** interpreter to generate a png image of the FST. A directory called **FSTImages** in your current directory is automatically created, and **JapaneseFST.png** is put into this directory. You can optionally specify a different directory that you want the image to be put into, for example **myDirectory**, like so:
-```
-python fstImage.py JapaneseFST.foma myDirectory
-```
-If **myDirectory** does not already exist, it is created. 
-Also, 
-```
-python fstImage.py -h
-```
-provides more information about the arguments that **fstImage.py** accepts.
+to run the file! <br><br> 
+See [Getting an Image of a FST](#getting-an-image-of-a-fst) if you are curious about what the Finite State Transducers look like. 
 
 ## Some words to get you started
 Here is a list of words to get you started, adapted from Introductory Phonology by Bruce Hayes, Ch. 3, Exercise 3, as well as Japanese: Revised Edition by Shoichi Iwasaki to reflect a romanized writing system. Try plugging them into the REPL!
@@ -231,6 +224,22 @@ Words that should stay the same:
 |fujiyama       |'Mount Fuji'|
 |arimasentte    |'that there isn't'|
 |honda          |'brand of automobile'|
+
+## Getting an Image of a FST
+First, your FST must be in a binary file with file extension **.foma**. Running the Makefile will automatically generate some FSTs, and put them into a newly created **FSTs** folder. To get a png image of a certain FST, for example **JapaneseFST.foma**, you can run:
+```
+python fstImage.py JapaneseFST.foma
+```
+This will run some commands in the **foma** interpreter to generate a png image of the FST. A directory called **FSTImages** in your current directory is automatically created, and **JapaneseFST.png** is put into this directory. You can optionally specify a different directory that you want the image to be put into, for example **myDirectory**, like so:
+```
+python fstImage.py JapaneseFST.foma myDirectory
+```
+If **myDirectory** does not already exist, it is created. 
+Also, 
+```
+python fstImage.py -h
+```
+provides more information about the arguments that **fstImage.py** accepts.
 
 ## Some Development Details
 ### Makefile
